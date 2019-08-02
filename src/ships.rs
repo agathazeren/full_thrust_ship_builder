@@ -1,10 +1,13 @@
+
+#[derive(PartialEq,Clone)]
 pub struct Ship{
-    systems: Vec<System>,
-    thrust_rating:i8,
-    advanced_drive:bool,
-    hull_rows:i8,
-    hull_count:i16,
-    armor:Vec<ArmorRow>,    
+    pub name:String,
+    pub systems: Vec<System>,
+    pub thrust_rating:i8,
+    pub advanced_drive:bool,
+    pub hull_rows:i8,
+    pub hull_count:i16,
+    pub armor:Vec<ArmorRow>,    
 }
 
 #[derive(PartialEq,Clone)]
@@ -100,18 +103,25 @@ impl std::ops::BitOr<Arcs> for Arcs{
 }
 
 
-struct ArmorRow{
+#[derive(PartialEq,Clone)]
+pub struct ArmorRow{
     kind:ArmorKind,
     size:i8,
 }
 
-enum ArmorKind{
+#[derive(PartialEq,Clone)]
+pub enum ArmorKind{
     Standard,Regenerative
 }
 
 
 fn main(){
-    let ff = Ship{
+    
+}
+
+lazy_static!{
+    pub static ref TEST_SHIP:Ship = Ship{
+        name:"Foo".to_owned(),
         thrust_rating:6,
         advanced_drive:false,
         hull_count: 5,

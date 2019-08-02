@@ -6,5 +6,5 @@ edition = "2018"
 
 [dependencies]
 yew = "0.7.0"
-
+lazy_static = "1.3"
 

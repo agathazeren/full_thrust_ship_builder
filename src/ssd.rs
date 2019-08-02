@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use crate::ships::System;
+use crate::ships::{self,Ship,System};
 
 #[derive(Clone)]
 pub struct Icon{
@@ -41,4 +41,67 @@ impl Renderable<Self> for Icon{
     }
 }
 
-    
+
+
+pub struct SSD{
+    ship:Ship
+}
+
+#[derive(Clone,PartialEq)]
+pub struct SSDProps{
+    pub ship:Ship
+}
+
+impl Default for SSDProps{
+    fn default()->Self{
+        SSDProps{
+            ship: ships::TEST_SHIP.clone()
+        }
+    }
+}
+
+impl Component for SSD{
+    type Properties = SSDProps;
+    type Message = ();
+
+    fn create(props:SSDProps,_:ComponentLink<Self>)->Self{
+        SSD{
+            ship:props.ship
+        }
+    }
+
+    fn update(&mut self,_:())->ShouldRender{
+        false
+    }
+}
+
+
+impl Renderable<SSD> for SSD{
+    fn view(&self)->Html<Self>{
+        html!{
+            <div class="ssd-box">
+                <span class="ssd-name">{self.ship.name.to_owned()}</span>
+            </div>
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

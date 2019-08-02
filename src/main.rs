@@ -1,117 +1,69 @@
+#![feature(never_type)]
 
 use yew::prelude::*;
 
 
+
+#[macro_use]
+extern crate lazy_static;
+
 mod ships;
 mod ssd;
+mod system_view;
 
-struct SystemView{
-    system:ships::System,
+
+struct ShipPane{
+    ship:ships::Ship
+
 }
 
 #[derive(Clone,PartialEq)]
-struct SystemViewProps{
-    system:ships::System,
+struct ShipPaneProps{
+    ship:ships::Ship
 }
 
-impl Default for SystemViewProps{
+impl Default for ShipPaneProps{
     fn default()->Self{
-        SystemViewProps{
-            system:ships::System::cannon("Beam",1,ships::Arcs::all())
+        ShipPaneProps{
+            ship:ships::TEST_SHIP.clone()
         }
     }
 }
 
+impl Component for ShipPane{
+    type Message = !;
+    type Properties = ShipPaneProps;
 
-impl Component for SystemView{
-    type Message = ();
-    type Properties = SystemViewProps;
-
-    fn create(props:Self::Properties, _:ComponentLink<Self>)->Self{
-        SystemView{system:props.system}
+    fn create(props:ShipPaneProps,_:ComponentLink<Self>)->Self{
+        ShipPane{
+            ship:props.ship
+        }
     }
 
-    fn update(&mut self, _:Self::Message)->ShouldRender{
+    fn update(&mut self,_:!)->ShouldRender{
         false
     }
-
 }
 
-impl Renderable<SystemView> for SystemView{
-    fn view(&self)-> Html<Self>{
-        use ships::SystemDesign::*;
-        let detail = match &self.system.design {
-                    Identity => html!{},
-                    Cannon(class, arcs) => html!{
-                        <span> {format!("Class: {}, Arcs: {}",class,arcs.count())} </span>
-                    }
-                };
-
-
-        
+impl Renderable<Self> for ShipPane{
+    fn view(&self)->Html<Self>{
+        use system_view::SystemList;
+        use ssd::SSD;
         html!{
-            <div class="system-box">
-                <ssd::Icon system={ships::System::identity("PDS")}/>
-                <span>{self.system.name.clone()}</span><br/>
-                {detail}
+            <div id="ship-pane">
+                <SSD ship=self.ship.clone()/>
+                <SystemList systems=self.ship.systems.clone()/>
             </div>
         }
     }
 }
+                
 
 
 
-#[derive(Clone)]
-struct SystemList{
-    systems:Vec<ships::System>
-}
-
-#[derive(Clone,PartialEq)]
-struct SystemListProps{
-    systems:Vec<ships::System>
-}
-
-impl Default for SystemListProps{
-    fn default()->Self{
-        SystemListProps{
-            systems:vec![
-                ships::System::cannon("Beam",3,ships::Arcs::forward3()),
-                ships::System::identity("PDS"),
-                ships::System::identity("FCS")
-            ]
-        }
-
-    }
-}
-
-
-
-impl Component for SystemList{
-    type Message = ();
-    type Properties = SystemListProps;
-
-    fn create(props:Self::Properties,_:ComponentLink<Self>)->Self{
-        SystemList{systems:props.systems}
-    }
-
-    fn update(&mut self, _:Self::Message)->ShouldRender{
-        false
-    }
-
-}
-
-impl Renderable<SystemList> for SystemList{
-    fn view(&self)->Html<SystemList>{
-        html!{
-            <div>
-            {for self.systems.iter().map(|sys| html!{<SystemView system={sys}/>})}
-            </div>
-        }
-    }
-}
 
 
 
 fn main(){
-    yew::start_app::<SystemList>();
+    yew::start_app::<ShipPane>();
 }
